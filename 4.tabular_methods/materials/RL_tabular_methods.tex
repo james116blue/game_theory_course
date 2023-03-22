@@ -1,0 +1,292 @@
+\documentclass[notheorems]{beamer} % option notheorems
+\usepackage[utf8]{inputenc}
+\usepackage[main=russian,english]{babel}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage{algorithm,algpseudocode}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\newtheorem{definition}{Определение}
+\newtheorem{examples}{Примеры}
+
+\DeclareMathOperator*{\argmax}{argmax}
+%------------------------------------------------------------
+%This block of code defines the information to appear in the
+%Title page
+\title[Обучение с подкреплением] %optional
+{Стохастическая аппроксимация. \\ Табличные методы обучения с подкреплением}
+
+%\author {Б.В.В.}
+
+
+
+\date[Теория игр] % (optional)
+{Теория игр,  2022}
+
+\logo{\includegraphics[height=1cm]{MIREA_logo}}
+
+%End of title page configuration block
+%------------------------------------------------------------
+
+
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Содержание}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------------------------
+
+
+\begin{document}
+
+%The next statement creates the title page.
+\frame{\titlepage}
+
+
+%---------------------------------------------------------
+%This block of code is for the table of contents after
+%the title page
+\begin{frame}
+\frametitle{Содержание}%-------------------------------------
+\tableofcontents
+\end{frame}
+%---------------------------------------------------------
+\section{Стохастическая аппроксимация}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{Ограничения методов динамического программирования}
+
+\begin{block}{уравнение оптимальности Беллмана}	
+	$v*=T(v^*) = \lim_{k \to \infty}T^k(v)$, где $T : \mathcal{V} \to \mathcal{V}$ 
+	$$T(v)(s) = \max_a \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + \gamma v(s')\bigg{)} $$
+\end{block}
+\begin{itemize}
+	\item вероятностное распределение  $p(s',r|s,a)=  \text{Pr}[S_{t+1}=s', R_{t+1}=r|S_t=s, A_t=a ]$ перехода на шаге $t$  в состояние $s'$ и получения награждения  $r$ при условии нахождения в состоянии $s$ и выполнении действия $a$ должно быть известно 
+	\item на каждой итерации необходимо вести расчеты для множества всех возможных наборов $\{(s,a,s',r)\}_{s' \in \mathcal{S}, r}$, даже если  их вероятность встретить на практике крайне мала
+\end{itemize}
+\end{frame}
+
+%---------------------------------------------------------
+\begin{frame}
+	\frametitle{ Архитектура задачи последовательного принятия решения}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{agent_env}
+		\caption{Взаимодействие агента и среды}
+		\label{fig:question}
+	\end{figure}
+\begin{alertblock}{Отличие обучения с подкреплением от динамического программирования}
+	При наличии среды или ее имитационной модели доступна только возможность взаимодействия с ней и соответственно на каждом шаге $t$ сэмплы, генерируемые МППР $(s_t, a_t, s_{t+1}, r_{t+1}) \sim p(s_{t+1}, r_{t+1} \mid s_t, a_t)$
+\end{alertblock}
+
+	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Стохастическая оптимизация}
+	Мотивация: итеративный метод Ньютона для нахождения корня $x^*$ детерминированной функции $f(x^*) = 0$:
+		$$ x_{k+1} = x_k - \big{(} f'(x_k) \big{)}^{-1} f(x_k) $$
+	
+	\begin{block}{Постановка задачи}
+		Управляемое воздействие  $x \in \mathcal{X}$
+		
+		Случайная величина $\xi \sim \mathbb{P}_\xi$ (добавляется стохастичность)
+		
+	    На выходе случайная функция, выдаваемая  $f(x, \xi)$
+	    
+	    Необходимое найти такое значение воздействия $x^*$, что $\mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ f(x^*, \xi) ] = 0$
+	\end{block}
+
+Примеры: Вазан, Стохастическая аппроксимация
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Методы решения}
+		Мотивация: итеративный метод Ньютона:
+	$ x_{k+1} = x_k - \big{(} f'(x_k) \big{)}^{-1} f(x_k) $
+		\begin{block}{Постановка задачи}
+		Управляемое воздействие  $x \in \mathcal{X}$
+		
+		Случайная величина $\xi \sim \mathbb{P}_\xi$ (добавляется стохастичность)
+		
+		На выходе случайная функция, выдаваемая  $f(x, \xi)$
+		
+		Найти $x^* : \mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ f(x^*, \xi) ] = 0$:
+	\end{block}
+	
+	\begin{block}{Метод Роббинса-Монро}
+		Условия:
+		$\sum_{k \ge 0}^{\infty} \alpha_k = +\infty, \quad \sum_{k \ge 0}^{\infty} \alpha_k^2 < +\infty$
+		
+		Итерация:
+				
+		Сэмплирование на основе управляющего воздействия $ x_k \mapsto f(x_k, \xi_k)  $ 
+		
+		Обновление $ x_{k+1} \leftarrow x_k  - \alert{\alpha_k} f(x_k, \alert{\xi_k}) $
+	\end{block}
+
+	
+\end{frame}
+
+%----------------------
+
+\begin{frame}
+	\frametitle{Поиск стационарной точки (fixed point) случайной функции}
+	\begin{block}{Постановка задачи}
+		Управляемое воздействие  $x \in \mathcal{X}$
+		
+		Случайная величина $\xi \sim \mathbb{P}_\xi$ (добавляется стохастичность)
+		
+		На выходе случайная функция, выдаваемая  $f(x, \xi)$
+		
+		Найти $x^* : \mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ f(x^*, \xi) ] = x^*$:
+	\end{block}
+	
+	\begin{block}{Сведение к задаче стохастической оптимизации}
+		Управляемое воздействие  $x \in \mathcal{X}$
+
+		Случайная величина $\xi \sim \mathbb{P}_\xi$ (добавляется стохастичность)
+		
+		На выходе случайная функция, выдаваемая  \alert{$g(x, \xi) = f(x, \xi)- x$}
+		
+		Найти $x^* : \mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ g(x^*, \xi) ] = 0$:
+
+	\end{block}
+\end{frame}
+
+%-----------------------------------
+
+
+
+
+\section{Q-learning}
+\begin{frame}
+	
+	\frametitle{Задача оптимизации в ДП}
+	\begin{block}{Постановка задачи}
+		Нахождение оптимальной стратегии $\pi^* : \mathcal{S} \to \mathcal{A} $
+	\end{block}
+	достигается решением 
+	\begin{block}{Постановка задачи}
+		Нахождение оптимальной функции ценности $v^* : \mathcal{S} \to \mathbb{R} $
+	\end{block}
+
+\begin{block}{Оптимальная стратегия}
+	$$ \pi_{t+1}^* (s) = \argmax_a q^\pi(s,a) = \argmax_a \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + v_t^*(s')\bigg{)} $$
+\end{block}
+
+Не подходит для RL, так как неизвестны  $p(s',r \mid s,a)$, нужно знать непосредственно $q^\pi(s,a)$ для любого $s$ и $a$
+\end{frame}
+
+
+%----------------------------------------------------------
+\begin{frame}
+	\frametitle{Q функция }
+	\begin{columns}
+		
+		\column{0.5\textwidth}
+		Для любого $s \in \mathcal{S}$
+		$$v^*(s) = \max_a q^*(s,a)$$
+		\begin{align*}
+		q^*(s,a) =  \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + v^*(s')]  
+		\end{align*}
+		
+		
+		
+		
+		\column{0.5\textwidth}
+		\begin{figure}
+			\includegraphics[width=0.65\textwidth]{backup_diagram_q}
+		\end{figure}
+	\end{columns}
+ \begin{alertblock}{Уравнение оптимальности}
+ 	$$ q^*(s,a) =  \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + \max_{a'} q^*(s',a')] $$
+ 	$$ q^* = \mathbb{F}q^*$$
+ \end{alertblock}
+  
+ Оптимальная стратегия находится тогда $$\pi_{t+1}^*(s) = \argmax_a q_{t+1}^*(s,a)$$
+
+\end{frame}
+
+%----------------------------------------------------------
+\begin{frame}
+	\frametitle{Q функция }
+	\begin{block}{Уравнение оптимальности}
+		\begin{align*}
+		 \mathbb{F}q^* &= \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + \max_{a'} q^*(s',a')] \\
+		 &= \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r] + \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[\max_{a'} q^*(s',a')]
+		 \end{align*}
+	\end{block}
+	
+	\begin{block}{Уравнение стохастической аппроксимации при сэмплировании}
+		$
+		\mathbb{F}(q, \xi_k) = r + max_{a'} q(s',a') 
+		= \mathbb{F}q + \xi
+		$
+		, где
+		$$ \xi_k = \bigg{(}r - \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r]\bigg{)} + \bigg{(}max_{a'} q(s',a') - \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[\max_{a'} q(s',a')] \bigg{)}$$
+		$$ \mathbb{E}[ \xi_k \mid s_0, a_o, \dots, s_k, a_k] = 0$$
+		Для $q^*$  $\mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ F(q^*, \xi) ] = \mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ \mathbb{F}q^* + \xi ]  = \mathbb{F}q^* = q^* $
+	\end{block} 
+	
+\end{frame}
+%---------------------------------------------------------
+%Example of the \pause command
+\begin{frame}
+	\frametitle{Переход к СА в отношении оператора на векторном пространстве}	
+	
+	Если $|\mathcal{S}|=d$, $|\mathcal{A}|=n$,  то q-функция $q_: \mathcal{S} \times  \mathcal{A}  \to \mathbb{R}$ может быть представлена таблицей с  $d$ строк и $n$ столбцов, которая раскладывается в одномерный массив (вектор) размерностью $|q| = d \times n$, индексируемый $q_{(s,a)}$.
+	
+	\begin{block}{Уравнение обновления для q-функции}
+		Для всех $(s,a)$ 
+		\alert{$q^{k+1}_{(s, a)} \leftarrow q^{k}_{(s, a)} + \alpha^k_{(s, a)} \left( r_{(s,a)} + \gamma \max_{a'} q^k_{(s', a') }- q^k_{(s, a)}\right )$}
+		
+		где $s',r \sim p(s',r \mid s, a)$, 
+		
+		$\alpha_k(s, a) \in [0, 1]$ --- случайные величины, с вероятностью один удовлетворяющие для каждой пары $s, a$ условиям Роббинса-Монро
+		$\sum_{k \ge 0}^{\infty} \alpha^k_{(s, a)} = +\infty \qquad \sum_{k \ge 0}^{\infty} (\alpha^k_{(s, a)})^2 < +\infty$
+		
+		для $s \neq S^k$, $a \neq A^k$  $\alpha^k_{(s, a)}=0$
+	\end{block}
+Tsitsiklis, Async Stochastic Approx and Q-Learning
+	
+\end{frame}
+
+
+
+%---------------------------------------------------------
+\begin{frame}
+	
+	\frametitle{Алгоритм}
+	\begin{algorithm}[H]
+		\caption{Q-learning}\label{ql}
+		\textbf{Гиперпараметры:} $\alpha$ --- параметр экспоненциального сглаживания, $\epsilon$ --- параметр исследований
+		
+		\vspace{0.3cm}
+		Инициализация $q(s, a)$ произвольно для всех $s \in \mathcal{S}, a \in \mathcal{A}$ \\
+		Наблюдение $s_0$ \\ 
+		\textbf{На $k$-ом шаге:}
+		\begin{enumerate}
+			\item с вероятностью $\epsilon$ сэмплируется $a_k \sim \text{Uniform}(\mathcal{A})$, иначе $a_k = \argmax\limits_{a_k} q(s_k, a_k)$
+			\item Наблюдение $r_k, s_{k+1}$
+			\item Обновление $q(s_k, a_k) \leftarrow q(s_k, a_k) + \alpha \left( r_k + \gamma \max\limits_{a_{k+1}} q(s_{k+1}, a_{k+1}) - q(s_k, a_k) \right)$
+		\end{enumerate}
+	\end{algorithm}
+\end{frame}
+
+
+%---------------------------------------------------------
+
+
+
+\end{document}

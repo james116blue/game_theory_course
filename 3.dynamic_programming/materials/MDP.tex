@@ -1,0 +1,380 @@
+\documentclass[notheorems]{beamer} % option notheorems
+\usepackage[utf8]{inputenc}
+\usepackage[main=russian,english]{babel}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage{algorithm,algpseudocode}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\newtheorem{definition}{Определение}
+\newtheorem{examples}{Примеры}
+
+\DeclareMathOperator*{\argmax}{argmax}
+%------------------------------------------------------------
+%This block of code defines the information to appear in the
+%Title page
+\title[МППР] %optional
+{Марковский процесс принятия решений. Динамическое программирование}
+
+%\author {Б.В.В.}
+
+
+
+\date[Теория игр] % (optional)
+{Теория игр, март 2022}
+
+\logo{\includegraphics[height=1cm]{MIREA_logo}}
+
+%End of title page configuration block
+%------------------------------------------------------------
+
+
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Содержание}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------------------------
+
+
+\begin{document}
+
+%The next statement creates the title page.
+\frame{\titlepage}
+
+
+%---------------------------------------------------------
+%This block of code is for the table of contents after
+%the title page
+\begin{frame}
+\frametitle{Содержание}
+\tableofcontents
+\end{frame}
+%---------------------------------------------------------
+\section{Принятие решения в условиях неопределенности}
+%---------------------------------------------------------
+\begin{frame}
+	\frametitle{  Математическое ожидание}
+	
+\begin{definition} Математическое ожидание - понятие в теории вероятностей, означающее среднее (взвешенное по вероятностям возможных значений) значение случайной величины \end{definition}
+
+
+Для дискретной случайной величины
+$$\mathop{\mathbb{E}}_{X \sim p_X}[X] = \sum_{i} x_i p_X(x_i) $$
+Для функции дискретной случайной величины
+$$\mathop{\mathbb{E}}_{X \sim p_X}[f(X)] = \sum_{i} f(x_i) p_X(x_i) $$
+
+Здесь $p_X(x_i) = \mathbb{P}[X=x_i] $ - функция вероятности дискретной случайной величины $X$
+
+%Условное математическое ожидание
+%$\mathop{\mathbb{E}}_{X \sim p_X(\mid y)}[X  \mid y] = \sum_{i} x_i p_X(x_i \mid y) $
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{ Принятие решения в условиях неопределенности}
+
+
+	Функция полезности $U: \mathcal{O} \to \mathbb{R}$ ставит каждому исходу в соответствие его полезность, где $\mathcal{O}=\{o_1, \dots , o_m \}$ - множество исходов
+	
+	Принятие решение в условиях неопределенности характеризуется тем, что каждому решению (действию) $a$  соответствует вероятностное распределение исходов
+	$ p(O \mid a) = (\mathbb{P}[o_1 \mid a], \dots, \mathbb{P}[o_m \mid a])$
+	
+	$a \succsim a'$ тогда и только тогда
+	$$ \mathop{\mathbb{E}}_{O \sim p( \mid a)}[U(O) \mid a] \geq \mathop{\mathbb{E}}_{O \sim p( \mid a')}[U(O) \mid a'] $$
+	$$ \sum_{i}\mathbb{P}[o_i \mid a]U(o_i) \geq \sum_{i}\mathbb{P}[o_i \mid a']U(o_i) $$
+	
+	
+\end{frame}
+
+\section{Марковский процесс принятия решений}
+%---------------------------------------------------------
+\begin{frame}
+\frametitle{ Архитектура задачи последовательного принятия решения}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{agent_env}
+	\caption{Взаимодействие агента и среды}
+	\label{fig:question}
+\end{figure}
+\begin{itemize}
+ \item $S_t$ - состояние (наблюдение состояния) среды в момент $t$
+ \item $R_t$ - награждение, которое получает агент в момент  $t$
+ \item $A_t$ - действия агента в момент $t$
+\end{itemize}
+
+
+
+\end{frame}
+%---------------------------------------------------------
+%Changing visivility of the text
+\begin{frame}
+\frametitle{МППР. Определение}
+Марковский процесс принятия решений (МППР) используется для описания среды (environment)  в том случае, если выполнено следующее свойство (Markov property): процесс зависит только от текущего состояния и не зависит от всей предыдущей истории.
+
+\begin{block}{ Определение}
+		Марковский процесс принятия решений задается набором следующих элементов $<\mathcal{S}, \mathcal{A}, p>$:
+	\begin{itemize}
+		\item множество  $\mathcal{S}$  состояний среды $s \in \mathcal{S}$
+		\item множество $\mathcal{A}$ доступных действий агента $a \in \mathcal{A}$
+		\item распределение вероятностей
+		$$p(s',r|s,a)=\text{Pr}[S_{t+1}=s', R_{t+1}=r|S_t=s, A_t=a ]$$ перехода на шаге $t$  в состояние $s'$ и получения награждения  $r$ при условии нахождения в состоянии $s$ и выполнении действия $a$ 
+	\end{itemize}
+\end{block}
+\end{frame}
+
+
+
+%---------------------------------------------------------
+\begin{frame}
+	\frametitle{Эпизодический (конечный) МППР}
+	\begin{itemize}
+		\item Представим в виде дерева конечной глубины $T$
+		\item Если из состояния $s_1$  можно перейти в состояние $s_2$, то из состояния $s_2$ нельзя перейти в состояние $s_1$
+		\item Реализация каждого эпизода представляется последовательностью (траекторией), которая  имеет вид
+		$\tau = (S_0, A_1, R_1, S_1, A_2, \dots, S_{T-1}, A_{T}, R_{T}, S_T)$  
+		\item Реализация каждого эпизода  численно характеризуется суммой полученных наград  $G(\tau) =  \sum_{k=1}^{T}R_k$,  из-за стохастичности траектории являющейся случайной величиной.
+	\end{itemize}
+\begin{figure}
+	\includegraphics[width=0.25\textwidth]{mdp_tree}
+\end{figure}
+	
+	
+\end{frame}
+%---------------------------------------------------------
+%Example of the \pause command
+\begin{frame}
+\frametitle{Стратегия агента. Функция ценности состояния}	
+
+\begin{definition} Функция $\pi: \mathcal{S} \to \mathcal{A}$, которая каждому состоянию $s$ ставит в соответствие действие $a$, называется \alert{стратегией агента} \end{definition}
+
+Фиксация определённой стратегии $\pi = (\pi_1, \dots , \pi_T)$ в МППР позволяет численно оценивать состояние математическим ожиданием суммы $G_t(\tau) =  \sum_{k=t}^{T}R_k=R_t+ R_{t+1}+ \dots +R_T$ полученных наград траектории, начинающейся на шаге $t$ с оцениваемого состояния $\tau =(S_t=s, A_{t+1}, R_{t+1}, S_{t+1}, \dots, S_{T-1}, A_{T}, R_{T}, S_T)$ 
+
+\begin{alertblock}{Функция ценности состояния $V$}
+	$$v_t^\pi: \mathcal{S} \to \mathbb{R}$$
+	$$ v_t^\pi(s) = \mathop{\mathbb{E}}_{\tau \sim p}[G_t(\tau) \mid A_{t+1}=\pi_k(S_t) ,\dots,A_{T}=\pi_k(S_{T-1}), S^0=s] $$
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Функция ценности состояния (продолжение)}	
+	\begin{definition}  Функция $R: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}$,
+		
+	\begin{align*}
+		R(s,a, s')
+		& =\mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[R^{t+1} \mid S^t=s, A^t = a, S^{t+1}=s'] \\
+		& = \sum_{r \in \mathbb{R}} r \frac{p(s',r|s,a)}{\sum_{s \in \mathcal{S}} p(s',r \mid s,a)}
+	\end{align*}
+	называется функцией награды
+	\end{definition}
+
+Так как зафиксировав $\pi$,  мы получаем марковскую цепь, то функцию ценности можно как мат ожидание функции награды на множестве всех возможных последовательностей состояний начиная с $S^0=s$
+$$ v^\pi(s) = \mathop{\mathbb{E}}_{S^1, \dots, S^T} \bigg{[} \sum_{k=0}^{T}R(S^k,\pi(S^k),S^{k+1}) \bigg{]} $$
+\end{frame}
+
+\begin{frame}
+\frametitle{Оптимальная функция ценности состояния }
+
+
+	\begin{definition}
+		Оптимальной стратегией называется стратегия $\pi^* $, для которой для каждого $s \in \mathcal{S}$  и для любой $\pi$  верно
+		 $$ v^{\pi^*}(s) \geq v^{\pi}(s) $$ 
+	\end{definition}
+	Оптимальных стратегий может быть несколько, но всем им соответствует оптимальная функция ценности
+	\begin{definition}
+	Оптимальной функцией ценности называется функция $$ v^*(s)= \max_{\pi_1,\dots,\pi_T} v^\pi(s)$$ для каждого $s \in  \mathcal{S}$
+	\end{definition}
+	
+\end{frame}	
+%---------------------------------------------------------
+
+
+% \begin{definition}  Функция $R: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$, 	$$R(s,a)=\mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[R^{t+1} | S^t=s, A^t = a] = \sum_{r \in \mathbb{R}}r{\sum_{s' \in \mathcal{S}}}p(s',r|s,a)$$  называется функцией награды \end{definition}
+
+\section{Динамическое программирование}
+
+%---------------------------------------------------------
+\begin{frame}
+	
+	\frametitle{Задача оптимизации в МППР}
+	\begin{block}{Постановка задачи}
+		Нахождение оптимальной стратегии $\pi^* : \mathcal{S} \to \mathcal{A} $
+	\end{block}
+	достигается решением 
+	\begin{block}{Постановка задачи}
+		Нахождение оптимальной функции ценности $v^* : \mathcal{S} \to \mathbb{R} $
+	\end{block}
+\end{frame}
+
+%------------------------------
+
+\begin{frame}
+	
+\frametitle{Нахождение оптимальной функции ценности}
+
+
+Для конечного МППР может быть решена методом обратной индукции (метод динамического программирования)
+\begin{block}{уравнение оптимальности Беллмана}
+$$ v_ {t+1}^* (s) =\max_a \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + v_t^*(s')] = \max_a \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + v_t^*(s')\bigg{)} $$
+\end{block}
+\begin{figure}
+	\includegraphics[width=0.6\textwidth]{backup_diagram}
+\end{figure}
+\end{frame}
+%------------------------------------
+\begin{frame}
+\frametitle{Нахождение оптимальной  стратегии }
+
+\begin{block}{Оптимальная стратегия}
+	$$ \pi_{t+1}^* (s) = \argmax_a \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + v_t^*(s')\bigg{)} $$
+\end{block}
+\begin{figure}
+	\includegraphics[width=0.6\textwidth]{backup_diagram}
+\end{figure}
+\end{frame}
+%------------------------------
+\begin{frame}
+	\frametitle{Q функция}	
+	Функция, ставящая в соответствие состоянию $s$ и возможному  действию $a$ в данном состоянии математическое ожидание суммы $G(\tau) =  \sum_{k=1}^{T}R_k$ полученных наград траектории, начинающейся с оцениваемого состояния и действия $\tau =(S^t=s, A^{t+1}=a, R^{t+1}, S^{t+1}, \dots, S^{T-1}, A^{T}, R^{T}, S^T)$ 
+	\begin{block}{Q функция}
+		
+		$$q_t^\pi: \mathcal{S} \times  \mathcal{A}  \to \mathbb{R}$$
+		\begin{align*}
+			 &q_t^\pi(s,a) = \\
+			 &\mathop{\mathbb{E}}_{\tau \sim p}[G_t(\tau) \mid \pi,S^t=s,A^t=a, A_{t+1}=\pi_k(S_t) ,\dots,A_{T}=\pi_k(S_{T-1})] 
+		\end{align*}
+	\end{block}
+	
+\end{frame}
+%----------------------------------------------------------
+\begin{frame}
+	\frametitle{Q функция и функция ценности}
+	\begin{columns}
+		
+		\column{0.5\textwidth}
+	Для любого $s \in \mathcal{S}$
+$$v_{t+1}^*(s) = \max_a q_{t+1}^*(s,a)$$
+\begin{align*}
+&q_{t+1}^*(s,a) =  \mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + v_t^*(s')]  \\
+&= \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + v_t^*(s')\bigg{)}
+\end{align*}
+
+
+$$\pi_{t+1}^*(s) = \argmax_a q_{t+1}^*(s,a)$$
+		
+		\column{0.5\textwidth}
+		\begin{figure}
+			\includegraphics[width=1.0\textwidth]{backup_diagram}
+		\end{figure}
+	\end{columns}
+
+	
+\end{frame}
+%---------------------------------------------------------
+%Highlighting text
+\begin{frame}
+	
+	\frametitle{Нахождение оптимальной функции ценности для конечного МППР}
+	\begin{algorithm}[H]
+		\caption{Алгоритм динамического программирования}\label{dp}
+		\begin{algorithmic}[1]
+			\Procedure{ДП}{}\newline
+			\textbf{Input:} МППР  $<\mathcal{S}, \mathcal{A}, P(s',r \mid s,a)>$\newline
+			\textbf{Output:} $v^* $
+			\State $v^0(s) \gets 0 $ для каждого  $s \in  \mathcal{S}$
+			\For{$i=1,2,\dots, T$}
+			\State $v^{k+1} \gets \max\mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + v^k(s')]$ 
+			\State где $\mathop{\mathbb{E}}_{(s',r) \sim p( \mid s,a)}[r + v^k(s')] = \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + v^k(s')\bigg{)}$ 
+			\EndFor
+			\State {\textbf{Return:}$v^T$}
+			\EndProcedure
+		\end{algorithmic}
+		\label{alg_1}
+	\end{algorithm}
+
+\end{frame}
+%------------------------------
+\section{Бесконечный МППР}
+\begin{frame}
+	\frametitle{Бесконечный МППР}
+	Траектория  имеет вид
+	$\tau = (S^0, A^1, R^1, S^1, A^2, \dots, S^{t-1}, A^{t}, R^{t}, S^t, \dots)$
+	
+	Сумма полученных наград 
+	  $$G(\tau) =  \sum_{k=1}^{\infty}\gamma^kR_k = \lim_{t \to \infty} \sum_{k=1}^{t}\gamma^kR_k $$
+	  для $\gamma < 1$ (условие необходимо для сходимости ряда)
+	  
+	 Cтратегия стационарна (не зависит от шага $t$) и имеет вид $\pi = (\pi, \pi, \dots)$
+
+	  	
+	  	\begin{alertblock}{Функция ценности состояния $V$}
+	  		$$v^\pi: \mathcal{S} \to \mathbb{R}$$
+	  		$$ v^\pi(s) = \mathop{\mathbb{E}}_{\tau \sim p}[G(\tau)|\pi,S^0=s] $$
+	  	\end{alertblock}
+\end{frame}
+%------------------------------
+\begin{frame}
+	\begin{definition}
+		Оптимальной функцией ценности называется функция $$ v^*(s)= \max_\pi v^\pi(s)$$ для каждого $s \in  \mathcal{S}$
+	\end{definition}
+
+	\begin{block}{Q функция}
+	
+		$$q^\pi: \mathcal{S} \times  \mathcal{A}  \to \mathbb{R}$$
+		$$ q^\pi(s,a) = \mathop{\mathbb{E}}_{\tau \sim p}[G(\tau)|\pi,S^0=s,A^0=a] $$
+	\end{block}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Нахождение оптимальной функции ценности}
+
+
+Для бесконечного МППР может быть решена методом value iteration
+
+\begin{block}{уравнение оптимальности Беллмана}
+ На множестве функций $v : \mathcal{S} \to \mathbb{R}$ зададим отображение 
+ $$T(v)(s) = \max_a \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + \gamma v(s')\bigg{)} $$
+ Тогда $$v*=T(v^*) = \lim_{k \to \infty}T^k(v) = \lim_{k \to \infty}T(T(\dots T(v)))$$
+ При этом для любых $v, v'$ $$ ||T(v)-T(v')|| \leq ||v-v'|| $$
+\end{block}
+\end{frame}
+%---------------------------------------------------------
+\begin{frame}
+	
+	\frametitle{Нахождение оптимальной функции ценности для бесконечного МППР}
+	\begin{algorithm}[H]
+		\caption{Value iteration}\label{dp}
+		\begin{algorithmic}[1]
+			\Procedure{ДП}{}\newline
+			\textbf{Input:} МППР  $<\mathcal{S}, \mathcal{A}, P(s',r \mid s,a), \gamma>$, требуемая точность решения $ \epsilon $\newline
+			\textbf{Output:} $v^* $
+			\State $v^0(s) \gets 0 $ для каждого  $s \in  \mathcal{S}$
+
+			\Repeat
+			
+			\State $v^{k-1} \gets v^k$
+			\State $v^{k} \gets  \sum_{(s',r)}p(s',r \mid s,a)\bigg{(}r + \gamma v^{k-1}(s')\bigg{)}$ 
+			 \Until{$||v^{k} -v^{k-1}|| \le \epsilon$}
+			
+			\State {\textbf{Return:}$v^k$}
+			\EndProcedure
+		\end{algorithmic}
+		\label{alg_1}
+	\end{algorithm}
+\end{frame}
+%---------------------------------------------------------
+
+
+
+\end{document}

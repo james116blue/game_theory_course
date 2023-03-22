@@ -1,0 +1,4 @@
+\babel@toc {russian}{}
+\beamer@sectionintoc {1}{Машинное обучение с учителем}{3}{0}{1}
+\beamer@sectionintoc {2}{Градиентный спуск}{12}{0}{2}
+\beamer@sectionintoc {3}{Искусственная нейронная сеть}{16}{0}{3}
