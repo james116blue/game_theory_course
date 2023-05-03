@@ -1,0 +1,2 @@
+\babel@toc {russian}{}
+\beamer@sectionintoc {1}{Алгоритм Reinforce}{3}{0}{1}
