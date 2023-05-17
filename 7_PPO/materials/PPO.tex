@@ -1,0 +1,217 @@
+\documentclass[notheorems]{beamer} % option notheorems
+\usepackage[utf8]{inputenc}
+\usepackage[main=russian,english]{babel}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage{algorithm,algpseudocode}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\newtheorem{definition}{Определение}
+\newtheorem{examples}{Примеры}
+
+\DeclareMathOperator*{\argmax}{argmax}
+%------------------------------------------------------------
+%This block of code defines the information to appear in the
+%Title page
+\title[Обучение с подкреплением] %optional
+{Методы policy  based. \\
+Алгоритм PPO}
+%\author {Б.В.В.}
+
+
+
+\date[Теория игр] % (optional)
+{Теория игр,  2023}
+
+\logo{\includegraphics[height=1cm]{MIREA_logo}}
+
+%End of title page configuration block
+%------------------------------------------------------------
+
+
+
+%------------------------------------------------------------
+%The next block of commands puts the table of contents at the 
+%beginning of each section and highlights the current section:
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Содержание}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+%------------------------------------------------------------
+
+
+\begin{document}
+
+%The next statement creates the title page.
+\frame{\titlepage}
+
+
+%---------------------------------------------------------
+%This block of code is for the table of contents after
+%the title page
+\begin{frame}
+\frametitle{Содержание}%-------------------------------------
+\tableofcontents
+\end{frame}
+%---------------------------------------------------------
+\section{Суррогатная оптимизационная функция}
+%---------------------------------------------------------
+\begin{frame}
+	\frametitle{МППР. Определение}
+	Марковский процесс принятия решений (МППР) используется для описания среды (environment)  в том случае, если выполнено следующее свойство (Markov property): процесс зависит только от текущего состояния и не зависит от всей предыдущей истории.
+	
+	\begin{block}{ Определение}
+		Марковский процесс принятия решений задается набором следующих элементов $<\mathcal{S}, \mathcal{A}, p>$:
+		\begin{itemize}
+			\item множество  $\mathcal{S}$  состояний среды $s \in \mathcal{S}$
+			\item множество $\mathcal{A}$ доступных действий агента $a \in \mathcal{A}$
+			\item распределение вероятностей
+			$$p(s',r|s,a)=\text{Pr}[S_{t+1}=s', R_{t+1}=r|S_t=s, A_t=a ]$$ перехода на шаге $t$  в состояние $s'$ и получения награждения  $r$ при условии нахождения в состоянии $s$ и выполнении действия $a$ 
+		\end{itemize}
+	\end{block}
+\end{frame}
+%----------------
+\begin{frame}
+	\frametitle{Бесконечный МППР}
+	\begin{block}{Стратегия}
+		$$\pi ( s \mid a) = \mathop{\mathbb{P}}[A_t=a \mid S_t=s] $$
+	\end{block}
+	\begin{block}{Траектория}
+		Стратегия вместе с моделью МППР задают вероятностное распределение над множеством траекторий $\Omega=\{\tau\}$
+		$$\tau = (s_0, a_1, r_1, s_1, a_2, \dots, s_{t-1}, a_{t}, r_{t}, s_t, \dots)$$
+		$$a_t \sim \pi(\cdot \mid s_t)$$ $$s_{t+1},r_{t+1} \sim p(\cdot|s_t, a_t)$$
+	\end{block}
+	
+	$S_t(\tau) = s_t, A_t(\tau) = a_t,R_t(\tau) = r_t$
+	
+
+	
+\end{frame}
+%---------------------------------------
+\begin{frame}
+	\frametitle{Бесконечный МППР}
+	\begin{block}{Стратегия}
+			$$\pi ( s \mid a) = \mathop{\mathbb{P}}[A_t=a \mid S_t=s] $$
+	\end{block}
+	\begin{block}{Траектория}
+		$$\tau = (s_0, a_1, r_1, s_1, a_2, \dots, s_{t-1}, a_{t}, r_{t}, s_t, \dots)$$
+	\end{block}
+	
+	\begin{block}{Сумма полученных наград}
+	 
+	$$G(\tau) =  \sum_{k=1}^{\infty}\gamma^kR_k(\tau) = \lim_{t \to \infty} \sum_{k=1}^{t}\gamma^kR_k(\tau) $$
+\end{block}
+
+	
+	
+	\begin{alertblock}{Функция ценности состояния $v^\pi: \mathcal{S} \to \mathbb{R}$}
+		
+		$$v^\pi(s)= \mathop{\mathbb{E}}_\tau [G(\tau)|\pi,S_0(\tau)=s]$$
+	\end{alertblock}
+\end{frame}
+
+%----------------
+\begin{frame}
+	\frametitle{Бесконечный МППР}
+	\begin{block}{Стратегия}
+	$$\pi ( s \mid a) = \mathop{\mathbb{P}}[A_t=a \mid S_t=s] $$
+\end{block}
+\begin{block}{Траектория}
+	$$\tau = (s_0, a_1, r_1, s_1, a_2, \dots, s_{t-1}, a_{t}, r_{t}, s_t, \dots)$$
+\end{block}
+
+\begin{block}{Сумма полученных наград}
+	
+	$$G(\tau) =  \sum_{k=1}^{\infty}\gamma^kR_k = \lim_{t \to \infty} \sum_{k=1}^{t}\gamma^kR_k $$
+\end{block}
+	
+	\begin{block}{Q функция}
+		
+		$$q^\pi: \mathcal{S} \times  \mathcal{A}  \to \mathbb{R}$$
+		$$ q^\pi(s,a) = \mathop{\mathbb{E}}_{\tau}[G(\tau)|\pi,S^0=s,A^0=a] $$
+	\end{block}
+\end{frame}
+%---------------------------------------------------------
+\begin{frame}
+	\frametitle{Policy gradient подход}
+	
+	\begin{block}{Параметризуемая стратегия}
+		$$ \pi:\Theta \to (\mathcal{S} \times \mathcal{A} \to \mathbb{R}) $$
+		$$ \theta \mapsto \pi ( s \mid a, \theta) \equiv \pi_\theta $$
+	\end{block}
+
+	\begin{block}{Максимизация функционала}
+	$$ J(\theta) \equiv \mathbb{E}_s \big{[}v^{\pi_\theta}(s) \big{]} $$
+\end{block}
+\begin{block}{Policy Gradient Theorem} Выражение для градиента оптимизируемого функционала можно записать следующим образом:
+	\begin{equation}\label{pgt_firstproof}
+	\nabla_{\theta} J(\pi_\theta) = \mathbb{E}_{\tau \sim \pi} \sum_{t \ge 0} \gamma^t \nabla_{\theta} \log \pi_\theta (A_t \mid S_t) q^{\pi}(S_t, A_t)
+	\end{equation}
+\end{block}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Стохастический градиентный спуск}
+	
+	\begin{block}{Стохастический градиентный спуск}
+		Управляемое воздействие  $x_k \in \mathcal{X}$
+		
+		Случайная величина $\xi \sim \mathbb{P}_\xi$ (добавляется стохастичность)
+		
+		На выходе случайная функция, выдаваемая  $f(x_k, \xi)$, такая что
+		
+		$$ \mathbb{E}_{\xi \sim \mathbb{P}_\xi}[ f(x^k, \xi) ] = \nabla_x|_{x=x_k} $$
+		
+		
+		Обновление $ x_{k+1} \leftarrow x_k  +\alpha_k f(x_k, \alert{\xi_k}) $
+	\end{block}
+
+	\begin{block}{Policy Gradient Theorem}
+		$$ f(x_k, \alert{\tau})= \sum_{t \ge 0} \gamma^t \nabla_{\theta} \log \pi_\theta (\alert{A_t} \mid \alert{S_t}) q^{\pi}(\alert{S_t}, \alert{A_t}) $$
+	\end{block}
+\end{frame}
+
+\begin{frame}
+	$G_t(\tau )= \sum_{k = t}^{T} \gamma^{k - t} R_{k}$
+	\begin{align*}
+	 & \mathbb{E}_{\tau \sim \pi \mid s_0 = s} \sum_{t \ge 0} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) G_t = \\
+	&= \sum_{t \ge 0} \mathbb{E}_{\tau \sim \pi \mid s_0 = s} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) G_t = \\
+	&= \sum_{t \ge 0} \mathbb{E}_{a_0, s_1 \dots s_t, a_t} \mathbb{E}_{s_{t+1}, a_{t+1} \dots} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) G_t = \\
+	&= \sum_{t \ge 0} \mathbb{E}_{a_0, s_1 \dots s_t, a_t} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t)  \mathbb{E}_{s_{t+1}, a_{t+1} \dots} G_t = \\
+	&= \sum_{t \ge 0} \mathbb{E}_{a_0, s_1 \dots s_t, a_t} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) Q^\pi(s_t, a_t) = \\
+	&= \sum_{t \ge 0} \mathbb{E}_{\tau \sim \pi \mid s_0 = s} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) Q^\pi(s_t, a_t) = \\
+	&= \mathbb{E}_{\tau \sim \pi \mid s_0 = s} \sum_{t \ge 0} \gamma^t \nabla_{\theta} \log \pi_\theta (a_t \mid s_t) Q^\pi(s_t, a_t)  
+	\end{align*}
+\end{frame}	
+
+
+\begin{frame}
+	\frametitle{Алгоритм}
+\begin{block}{REINFORCE}
+	\textbf{Гиперпараметры:} $N$ --- количество игр, $\pi(a \mid s, \theta)$ --- стратегия с параметрами $\theta$, SGD-оптимизатор.
+	
+	\vspace{0.3cm}
+	Инициализировать $\theta$ произвольно \\
+	\textbf{На очередном шаге $t$:}
+	\begin{enumerate}
+		\item играем $N$ игр $\tau_1, \tau_2 \dots \tau_N \sim \pi$ , $\tau = (s_0, a_0,  r_1, s_1, \dots, r_T, s_T)$
+		
+		\item для каждого $t$ в каждой игре $\tau$ считаем reward-to-go: $G_t(\tau )= \sum_{k = t}^{T} \gamma^{k - t} r_{k}$
+		\item считаем оценку градиента:
+		$$\nabla_\theta J(\pi) =\frac{1}{N}\sum_{\tau} \sum_{t \ge 0} \gamma^t \nabla_\theta \log \pi(a_t \mid s_t, \theta) G_t(\tau ) $$
+		\item делаем шаг градиентного подъёма по $\theta$, используя $\nabla_\theta J(\theta)$
+	\end{enumerate}
+\end{block}
+
+\end{frame}
+
+
+
+
+
+\end{document}
