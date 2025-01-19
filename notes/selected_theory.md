@@ -191,10 +191,62 @@ treat \pi as vector indexed by players
 
 ![img_2.png](img_2.png)
 
+### Extensive game. Repeated games
+
+<ins>a pure strategy of a player </ins> is a collection of maps
+from all possible histories into available action
+
+$h(x)$ - information set (generalization of idea of history) - waht player has when he is choosing his action
+
+**example**
+
+![img_18.png](img_18.png)
+
+The following two extensive form games are representations of the
+simultaneous-move matching pennies.
+The loops represent the information sets of the players who move at that
+stage. These are imperfect information games.
+These games represent exactly the same strategic situation: each player
+chooses his action not knowing the choice of his opponent.
+
+
+$x' \in h(x)$ means $x'$ is indistinguishable from $x$ 
+
+$V_G$ - set of nodes of $G$
+
+
+
+<ins>subgame $G'$ (of an extensive game G)</ins>
+a single nnode of the $G$ and its sucessors with property: 
+$x_1 \in V_{G'}$ and $x_2 \in h(x_1)$, then $x_2 \in V_{G'}$ (If a node in a particular information set is in the subgame then all members of that information set belong to the subgame.)
+
+
+<ins>subgame perfect nash equlibrium (SPE) in game $G$</ins>
+A strategy profile $s^*$ s.t.
+for any subgame $G'$ of $G$ ,
+$s^*|_{G'}$ (action profile implied by $s$ in the  subgame $G'$) is a Nash equilibrium of $G$ .
+
+**Backward induction** refers to starting from the last subgames of a
+finite game, then finding the best response strategy profiles or the
+Nash equilibria in the subgames, then assigning these strategies
+profiles and the associated payoffs to be subgames, and moving
+successively towards the beginning of the game.
+
+proof based on
+
+**One-stage Deviation Principle**^ 
+Informally, s is a subgame perfect equilibrium (SPE) if and only if no player i
+can gain by deviating from s in a single stage and conforming to s thereafter.
+
+
 
 ### Learning solution in game
 
-Ficticious play (store as memory opponents moves statistic)
+1. Ficticious play (store as memory opponents moves statistic)
+
+2. the study
+of evolutionary models: the replicator dynamic and the idea of an Evolutionary Stable
+Strategy or ESS. S
 
 ### Sources
 1. MULTI-AGENT REINFORCEMENT LE ARNING FOUNDATIONS AND MODERN APPROACHE S Stefano V. Albrecht
@@ -202,3 +254,7 @@ Ficticious play (store as memory opponents moves statistic)
 Martin J. Osborne
 3. https://nashpy.readthedocs.io/en/stable/text-book
 4. An overview of Multi-agent reinforcement learning from Game theoretic persspective
+5. A Tutorial on the Proof of
+the Existence of Nash Equilibria
+Albert Xin Jiang Kevin Leyton-Brown
+6. Playing for real? Ken Binmore
