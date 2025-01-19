@@ -258,3 +258,4 @@ Martin J. Osborne
 the Existence of Nash Equilibria
 Albert Xin Jiang Kevin Leyton-Brown
 6. Playing for real? Ken Binmore
+7. 6.254 : Game Theory with Engineering Applications. MIT
