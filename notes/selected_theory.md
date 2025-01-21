@@ -1,6 +1,6 @@
-![alt text](image.png)
+![alt text](images/image.png)
 
-![alt text](image-1.png)
+![alt text](images/image-1.png)
 
 <ins>Normal-form game (game in strategic form) (Нормальная форма игры) </ins>
 1. A finite set of $N$ players.
@@ -10,45 +10,31 @@
 
 **Types of games**
 
-![img_4.png](img_4.png)
+![img_4.png](images/img_4.png)
 
 **example**  the Prisoner’s Dilemma
 
-![alt text](image-2.png)
+![alt text](images/image-2.png)
 
 *Reward is closely related to preference*
-![alt text](image-3.png)
+![alt text](images/image-3.png)
 
 $$a_1 \preccurlyeq a_2 \Leftrightarrow u(a_1) \leq u(a_2)$$
 
 **example**
-![alt text](image-4.png)
+![alt text](images/image-4.png)
 
 **example**
-![img.png](img.png)
+![img.png](images/img.png)
 
 **example**
 Rock-scisor-paper game
 
 **example** Hawk-dove games
 
-![img_12.png](img_12.png)
-
-<ins>Extensive form games (Развёрнутая форма игры)</ins>
-
-![img_7.png](img_7.png)
-
-#### Deriving Normal Form from Extensive Form Games
-
-every extensive form game has a unique normal form
-representation
+![img_12.png](images/img_12.png)
 
 
-![img_8.png](img_8.png)
-
-->
-
-![img_9.png](img_9.png)
 
 ### Mixed strategies
 
@@ -60,17 +46,17 @@ Expected return for mixed strategies (utility) $$ J_n(\pi) = \mathbb{E}_\pi[R_n]
 
 <ins>reaction curve</ins>
 
-![img_10.png](img_10.png)
+![img_10.png](images/img_10.png)
 
-![img_11.png](img_11.png)
+![img_11.png](images/img_11.png)
 
 Spaces of mixed strategies
 
-![img_13.png](img_13.png)
+![img_13.png](images/img_13.png)
 
 <ins>Payoff regions</ins>
 
-![img_15.png](img_15.png)
+![img_15.png](images/img_15.png)
 
 cooperative payoff regions: 
 $\pi(a_n, a_{-n})$ не факторизуемая
@@ -78,11 +64,11 @@ $\pi(a_n, a_{-n})$ не факторизуемая
 $ J_n(\pi) = \mathbb{E}_\pi[R_n]=\sum_{(a_1,..,a_N) \in A_1 \times ... \times A_N}\pi(a_1, ..., a_N) \cdot R_n(a_1, ..., a_N)$ для $\forall  \pi(a_1, ..., a_N)$ , следовательно  convex function
 
 
-![img_14.png](img_14.png)
+![img_14.png](images/img_14.png)
 
 noncooperative payoff regions:
 
-![img_16.png](img_16.png)
+![img_16.png](images/img_16.png)
 
 
 ### Solution concepts
@@ -91,19 +77,19 @@ noncooperative payoff regions:
 
 $$\forall n R_n(\pi_n^*, \pi_{-n}^*) \geq R(\pi_n, \pi_{-n}^*)$$
 
-![alt text](image-5.png)
+![alt text](images/image-5.png)
 
  <ins>Best responce function</ins> 
 
 set-valued function 
-![img_1.png](img_1.png)
+![img_1.png](images/img_1.png)
 
 for  mixed strategies $B_n(\pi_{-n})=\underset{\pi_n}{\arg \max} J_n(\pi_n, \pi_{-n})$
 
 
 **Nash equlibrium in zero sum game = minimax (maximin)**
 
-![img_17.png](img_17.png)
+![img_17.png](images/img_17.png)
 
 **a player has a profitable deviation if and only if they have a profitable deviation to a pure strategy** can be established through the following proof.
 
@@ -189,18 +175,16 @@ then $\pi$ is a Nash equilibrium
 
 treat \pi as vector indexed by players
 
-![img_2.png](img_2.png)
+![img_2.png](images/img_2.png)
 
-### Extensive game. Repeated games
+### Extensive game (Развёрнутая форма игры)
 
 <ins>a pure strategy of a player </ins> is a collection of maps
 from all possible histories into available action
 
-$h(x)$ - information set (generalization of idea of history) - waht player has when he is choosing his action
+$I(x)$ - information set (generalization of idea of history) - waht player has when he is choosing his action
 
 **example**
-
-![img_18.png](img_18.png)
 
 The following two extensive form games are representations of the
 simultaneous-move matching pennies.
@@ -209,17 +193,34 @@ stage. These are imperfect information games.
 These games represent exactly the same strategic situation: each player
 chooses his action not knowing the choice of his opponent.
 
+![img_18.png](images/img_18.png)
 
-$x' \in h(x)$ means $x'$ is indistinguishable from $x$ 
+
+![img_7.png](images/img_7.png)
+
+#### Deriving Normal Form from Extensive Form Games
+
+every extensive form game has a unique normal form
+representation
+
+
+![img_8.png](images/img_8.png)
+
+->
+
+![img_9.png](images/img_9.png)
+
+$x' \in I(x)$ means $x'$ is indistinguishable from $x$ 
 
 $V_G$ - set of nodes of $G$
 
-
+$H$ - histories
 
 <ins>subgame $G'$ (of an extensive game G)</ins>
 a single nnode of the $G$ and its sucessors with property: 
-$x_1 \in V_{G'}$ and $x_2 \in h(x_1)$, then $x_2 \in V_{G'}$ (If a node in a particular information set is in the subgame then all members of that information set belong to the subgame.)
+$x_1 \in V_{G'}$ and $x_2 \in I(x_1)$, then $x_2 \in V_{G'}$ (If a node in a particular information set is in the subgame then all members of that information set belong to the subgame.)
 
+$H|_{G'} =\{ h'=(a^t, \dots , a^T):(h,h')=(a^1, \dots , a^T) \in H\}$
 
 <ins>subgame perfect nash equlibrium (SPE) in game $G$</ins>
 A strategy profile $s^*$ s.t.
@@ -238,7 +239,54 @@ proof based on
 Informally, s is a subgame perfect equilibrium (SPE) if and only if no player i
 can gain by deviating from s in a single stage and conforming to s thereafter.
 
+###  Repeated games
+$ r_i: A \to \mathbb{R}$ stage payoff for player $i$
+$$R = \sum_t \gamma^{t} \cdot r(a^t_i, a^t_{-i})  $$
 
+1. $T < \infty$
+
+**Theorem**  
+For $T < \infty$ unique SPE $\pi^* = a^*$ for unique pure one stage equilibrium $a^*$
+
+**Example** Finitely-Repeated Prisoners’ Dilemma
+
+![img_19.png](images/img_19.png)
+
+>In the last period,“defect” is a dominant strategy regardless of the
+history of the game. So the subgame starting at $T$ has a dominant
+strategy equilibrium: $( D, D )$.
+>
+>Then move to stage $T − 1$. By backward induction, we know that at
+T , no matter what, the play will be $(D, D )$. Then given this, the
+subgame starting at $T − 1$ (again regardless of history) also has a
+dominant strategy equilibrium.
+>
+>With this argument, we have that there exists a unique SPE:$ (D, D )$
+at each date.
+
+2. $T=\infty$
+
+$$R =(1-\gamma) \sum_t \gamma^{t} \cdot r(a^t_i, a^t_{-i})  $$
+
+<ins> Trigger strategy</ins>
+A trigger strategy essentially threatens other players with a “worse,”
+punishment, action if they deviate from an implicitly agreed action profile.
+
+**Example** Infinitely-Repeated Prisoners’ Dilemma
+
+>SPE - use action C unless someone not using first time D. In that case alse use D
+> 
+>From moment $t$ use action C
+> 
+> $R = (1-\gamma)(1 + \gamma + \gamma^2 + \dots) = 1$
+> 
+>From moment $t$ deviate and use action D
+> 
+> $R = (1-\gamma)(2 + 0 + 0 + \dots) = 2 \cdot (1 - \gamma)$
+>
+> cooperation better if $2 \cdot (1 - \gamma) \geq 1$
+
+**Folk Theorem**  
 
 ### Learning solution in game
 
@@ -249,7 +297,9 @@ of evolutionary models: the replicator dynamic and the idea of an Evolutionary S
 Strategy or ESS. S
 
 ### Sources
-1. MULTI-AGENT REINFORCEMENT LE ARNING FOUNDATIONS AND MODERN APPROACHE S Stefano V. Albrecht
+1. Multi-Agent Reinforcement Learning:
+Foundations and Modern Approaches
+Stefano V. Albrecht,  Filippos Christianos,  Lukas Schäfer 
 2. An Introduction to Game Theory by
 Martin J. Osborne
 3. https://nashpy.readthedocs.io/en/stable/text-book
