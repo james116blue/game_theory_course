@@ -288,13 +288,46 @@ punishment, action if they deviate from an implicitly agreed action profile.
 
 **Folk Theorem**  
 
+
+
 ### Learning solution in game
 
 1. Ficticious play (store as memory opponents moves statistic)
 
-2. the study
-of evolutionary models: the replicator dynamic and the idea of an Evolutionary Stable
-Strategy or ESS. S
+2. Evolution in game:
+
+a. The replicator dynamic  (continuous time) - can be used to learn solution
+
+b. The idea of an Evolutionary Stable (only definition of solution)
+Strategy or ESS. 
+
+#### Evolutionary Stable
+Strategy
+
+symmetric two-player game
+
+current strategy $\pi$
+
+small fraction ($\epsilon$) select different strategy $\pi$
+
+The expected payoff of a mutant is: $(1-\epsilon)r(\pi, \pi^*) + \epsilon r(\pi, \pi)$
+
+The expected payoff of no-mutant player is: $(1-\epsilon)r(\pi^*, \pi^*) + \epsilon r(\pi^*, \pi)$
+
+<ins>evolutionary stable strategy (1) </ins> $\pi^* \in \Delta$ : 
+$\exists \epsilon'$ such that 
+for any $\pi$ for any $\epsilon < \epsilon'$ 
+
+$$r(\pi^*, (1-\epsilon)\pi^* + \epsilon  \pi ) > r(\pi, (1-\epsilon)\pi^* + \epsilon  \pi )$$
+
+<ins>evolutionary stable strategy (2) </ins> $\pi^* \in \Delta$ $ \forall \pi \neq \pi^*  $  :
+1. $ r(\pi^*,\pi^*) \geq r(\pi, \pi^*) $
+2. if $ r(\pi^*,\pi^*)=r(\pi, \pi^*) $ then $ r(\pi,\pi) < r(\pi^*, \pi)  $
+
+definitions (1) and (2) are equal
+
+based on following property $$ r(\pi^*, (1-\epsilon)\pi^* + \epsilon  \pi ) = (1-\epsilon)r(\pi^*, \pi^*)+\epsilon r(\pi^*, \pi)$$
+because $r(\pi_1, \pi_2) = J(\pi_1, \pi_2)=\mathbb{E}_{(a_1,a_2)}[R(a_1, a_2)]$
 
 ### Sources
 1. Multi-Agent Reinforcement Learning:
