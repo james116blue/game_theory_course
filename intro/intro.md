@@ -2,8 +2,8 @@
 marp: true
 theme: default
 paginate: true
-header: 'Введение в машинное обучение в компьютерной безопасности'
-footer: '© 2026 | ML for Cybersecurity'
+header: 'РТУ МИРЭА'
+footer: '© 2026 | ККСО-21'
 math: mathjax
 style: |
   section {
@@ -86,7 +86,7 @@ $$ \{ (\mathbf{x}_n, y_n)\}_{n=1,N}$$
 ## Линейный классификатор
 $$ f(x; W, b) = f_{W,b}(x) = Wx+b $$
 
-$ W \in \mathbb{R}^{d \times K}, b \in \mathbb{R}^k$ -  параметры (веса)
+$$ W \in \mathbb{R}^{d \times K}, b \in \mathbb{R}^k$$
 
 Интерпретация
 1. score (оценка)
@@ -411,5 +411,6 @@ $$
 ### Вопросы и обсуждение
 
 **Рекомендуемая литература**:
+- https://github.com/james116blue/game_theory_course
 - Bishop, C. M. *Pattern Recognition and Machine Learning*
 - MITRE ATLAS: Adversarial Threat Landscape for Artificial-Intelligence Systems
