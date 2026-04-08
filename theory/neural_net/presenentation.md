@@ -192,8 +192,89 @@ ___
 •  Стандарт де-факто для скрытых слоёв
 ```
 
+---
+
+## Why a dead ReLU corresponds to a decision plane outside all input data
+
+Consider a single ReLU neuron in a hidden layer of a neural network. Its output is:
+
+$$
+z = \mathbf{w}^T \mathbf{x} + b
+$$
+$$
+a = \text{ReLU}(z) = \max(0, z)
+$$
+
+where $\mathbf{x} \in \mathbb{R}^d$ is the input vector (or the activation from the previous layer), $\mathbf{w}$ the weight vector, and $b$ the bias.
+
+---
+
+### The neuron's pre-activation hyperplane
+
+The quantity $z = \mathbf{w}^T \mathbf{x} + b$ defines a **hyperplane** in the input space:
+
+$$
+\mathcal{H}: \mathbf{w}^T \mathbf{x} + b = 0
+$$
+
+This hyperplane splits the space into two half‑spaces:
+
+- $\mathbf{w}^T \mathbf{x} + b > 0$ → neuron is active ($a > 0$)
+- $\mathbf{w}^T \mathbf{x} + b < 0$ → neuron is off ($a = 0$)
+
+---
+
+### Condition for a dead ReLU
+
+The neuron is **dead** if for **every** training sample $\mathbf{x} \in \mathcal{D}$ (and indeed for all realistic inputs) we have:
+
+$$
+\mathbf{w}^T \mathbf{x} + b < 0 \quad \Rightarrow \quad a = 0
+$$
+
+Equivalently, there exists some $\epsilon > 0$ (depending on the dataset) such that:
+
+$$
+\max_{\mathbf{x} \in \mathcal{D}} \left( \mathbf{w}^T \mathbf{x} + b \right) < 0
+$$
+
+---
+
+### The hyperplane lies outside the data cloud
+
+Let $\mathcal{C} = \text{conv}(\mathcal{D})$ be the convex hull of all inputs. Because every data point gives a negative pre‑activation, the hyperplane $\mathcal{H}$ does **not** intersect $\mathcal{C}$:
+
+$$
+\mathcal{H} \cap \mathcal{C} = \varnothing
+$$
+
+Geometrically, the hyperplane is placed **completely outside the region where the data lives**. All data points lie strictly on the negative side, and the hyperplane is somewhere far away in the direction of $-\mathbf{w}$.
+
+---
+
+### Why this is fatal for learning
+
+For a dead neuron, the output is constant zero regardless of $\mathbf{x}$. The gradient of the loss $L$ with respect to the neuron’s parameters is:
+
+$$
+\frac{\partial L}{\partial \mathbf{w}} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z} \cdot \mathbf{x}, \qquad
+\frac{\partial L}{\partial b} = \frac{\partial L}{\partial a} \cdot \frac{\partial a}{\partial z}
+$$
+
+But $\frac{\partial a}{\partial z} = 0$ when $z < 0$, so:
+
+$$
+\frac{\partial L}{\partial \mathbf{w}} = \mathbf{0}, \qquad \frac{\partial L}{\partial b} = 0
+$$
+
+The neuron receives **no error signal** – its weights and bias freeze forever. The hyperplane $\mathcal{H}$ remains permanently outside the data cloud, and the neuron contributes nothing to discriminating between classes.
+
+---
 
 
+### Intuitive takeaway
+
+A dead ReLU neuron acts like a linear classifier whose decision boundary has been pushed so far away that **every input is classified as the negative side**. It is useless for the task and can never recover.
 
 ---
 
@@ -306,6 +387,17 @@ $$
 
 ### Случай 1: $j = y$ (правильный класс):
 $$
+\frac{\partial s}{\partial W_2} = h^T \quad \text{(по правилам дифференцирования матриц)}
+$$
+
+### Градиенты для одного примера:
+$$
+\boxed{
+\begin{aligned}
+\frac{\partial \ell}{\partial W_2} &= (p - \mathbf{1}_y) \cdot h^T \quad &[K \times H] \\
+\frac{\partial \ell}{\partial b_2} &= p - \mathbf{1}_y \quad &[K \times 1]
+\end{aligned}
+}
 \frac{\partial \ell}{\partial s_y} = -1 + \frac{e^{s_y}}{\sum_k e^{s_k}} = \boxed{p_y - 1}
 $$
 
