@@ -6,10 +6,10 @@
     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/malware/pe_classification_decision_tree_task.ipynb) 
 
 2. Анализ сетевого трафика в целях обнаружения сетевых атак
-    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network/netwok_attack_detection.ipynb) 
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network/netwok_attack_detection.ipynb) пока не готов
 
 3. Большие языковые модели в компьютерной безопасности
-   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network/netwok_attack_detection.ipynb) 
+   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network/netwok_attack_detection.ipynb) пока не готов
 
 4. Методы обучения с покдреплением
    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/rl/REINFORCE_task.ipynb) 
@@ -26,7 +26,7 @@
 1.  Запустите каждую ячейку с  кодом по очереди (`Shift+Enter`)
 2.  Найдите ячейки с задачами (обычно помечены `# TODO` или `# YOUR CODE HERE`).
 3.  Напишите свой код и запустите ячейку с вашим кодом (`Shift+Enter`) и следующую ячейку с тестами, чтобы убедиться, что решение работает.
-4. Продолжите дальше  с другими ячейками 
+4. Продолжите дальше  с другими ячейками, дойдя до конца
 
 
 ### Шаг 3: Сохранение работы
