@@ -6,13 +6,11 @@
     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/malware/pe_classification_decision_tree_task.ipynb) 
 
 2. Анализ сетевого трафика в целях обнаружения сетевых атак
-    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network_attack/jax_classification.ipynb) 
+    Дорабатывается
 
 3. Большие языковые модели в компьютерной безопасности
-   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/network/netwok_attack_detection.ipynb) пока не готов
+   Дорабатывается
 
-4. Методы обучения с покдреплением
-   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/james116blue/game_theory_course/blob/spring-2026/rl/REINFORCE_task.ipynb) 
   
 
 
