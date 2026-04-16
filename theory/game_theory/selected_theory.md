@@ -40,7 +40,8 @@ Rock-scisor-paper game
 
 $$\pi=(\pi_1,..\pi_i..,\pi_N)=(\pi_i,\pi_{-i})$$
 
-Expected return for mixed strategies (utility) $$ J_n(\pi) = \mathbb{E}_\pi[R_n]=\sum_{(a_1,..,a_N) \in A_1 \times ... \times A_N}\pi_1(a_1)\cdot...\cdot\pi_n(a_n) \cdot R_n(a_1, ..., a_N) = \sum_{a_n \in A_n }  \pi_1(a_n) \Bigg[ \sum_{a_{-n} \in A_{-n} }  \pi_n(a_{-n}) \cdot R_n(a_n, a_{-n}) \Bigg] = < \Big(\sum_{a_n \in A_n }  \pi_1(a_n) \Big)_{a_n \in A_n } , \Big( \sum_{a_{-n} \in A_{-n} }  \pi_n(a_{-n}) \cdot R_n(a_n, a_{-n}) \Big)_{a_n \in A_n } > $$
+Expected return for mixed strategies (utility) 
+$$J_n(\pi) = \mathbb{E}_\pi[R_n]=\sum_{(a_1,..,a_N) \in A_1 \times ... \times A_N}\pi_1(a_1)\cdot...\cdot\pi_n(a_n) \cdot R_n(a_1, ..., a_N) = \sum_{a_n \in A_n }  \pi_1(a_n) \Bigg[ \sum_{a_{-n} \in A_{-n} }  \pi_n(a_{-n}) \cdot R_n(a_n, a_{-n}) \Bigg] = < \Big(\sum_{a_n \in A_n }  \pi_1(a_n) \Big)_{a_n \in A_n } , \Big( \sum_{a_{-n} \in A_{-n} }  \pi_n(a_{-n}) \cdot R_n(a_n, a_{-n}) \Big)_{a_n \in A_n } >$$
 
 *For two players game reward vector will be equal* $R_k((\pi_1, \pi_2)) = \pi_1R_k\pi_2$
 
@@ -59,9 +60,11 @@ Spaces of mixed strategies
 ![img_15.png](images/img_15.png)
 
 cooperative payoff regions: 
-$\pi(a_n, a_{-n})$ не факторизуемая
+$\pi(a_n, a_{-n})$ не факторизуемая, для $\forall  \pi(a_1, ..., a_N)$:
 
-$ J_n(\pi) = \mathbb{E}_\pi[R_n]=\sum_{(a_1,..,a_N) \in A_1 \times ... \times A_N}\pi(a_1, ..., a_N) \cdot R_n(a_1, ..., a_N)$ для $\forall  \pi(a_1, ..., a_N)$ , следовательно  convex function
+$$J_n(\pi) = \mathbb{E}_\pi[R_n]=\sum_{(a_1,..,a_N) \in A_1 \times ... \times A_N}\pi(a_1, ..., a_N) \cdot R_n(a_1, ..., a_N)$$ 
+
+следовательно  convex function
 
 
 ![img_14.png](images/img_14.png)
@@ -137,7 +140,7 @@ Thus, this mixed strategy  σ'ᵢ  represents a profitable deviation as well.
 
 **proof**
 
-define $ \varphi_{n,a_n} (\pi=\pi_n,\pi_{-n}) = \max \{ 0, J_n(a_n, \pi_{-n})\}$
+define $\varphi_{n,a_n} (\pi=\pi_n,\pi_{-n}) = \max \{ 0, J_n(a_n, \pi_{-n})\}$
 
 it is one of the best responces regarding action $a_n$ because  a player has a profitable deviation if and only if he has a profitable
 deviation to a pure strategy
@@ -240,7 +243,7 @@ Informally, s is a subgame perfect equilibrium (SPE) if and only if no player i
 can gain by deviating from s in a single stage and conforming to s thereafter.
 
 ###  Repeated games
-$ r_i: A \to \mathbb{R}$ stage payoff for player $i$
+$r_i: A \to \mathbb{R}$ stage payoff for player $i$
 $$R = \sum_t \gamma^{t} \cdot r(a^t_i, a^t_{-i})  $$
 
 1. $T < \infty$
@@ -320,13 +323,15 @@ for any $\pi$ for any $\epsilon < \epsilon'$
 
 $$r(\pi^*, (1-\epsilon)\pi^* + \epsilon  \pi ) > r(\pi, (1-\epsilon)\pi^* + \epsilon  \pi )$$
 
-<ins>evolutionary stable strategy (2) </ins> $\pi^* \in \Delta$ $ \forall \pi \neq \pi^*  $  :
-1. $ r(\pi^*,\pi^*) \geq r(\pi, \pi^*) $
-2. if $ r(\pi^*,\pi^*)=r(\pi, \pi^*) $ then $ r(\pi,\pi) < r(\pi^*, \pi)  $
+<ins>evolutionary stable strategy (2) </ins> 
+$\pi^* \in \Delta$ $\forall \pi \neq \pi^*$  :
+1. $r(\pi^*,\pi^*) \geq r(\pi, \pi^*)$
+2. if $r(\pi^*,\pi^*)=r(\pi, \pi^*)$ then $r(\pi,\pi) < r(\pi^*, \pi)$
 
 definitions (1) and (2) are equal
 
-based on following property $$ r(\pi^*, (1-\epsilon)\pi^* + \epsilon  \pi ) = (1-\epsilon)r(\pi^*, \pi^*)+\epsilon r(\pi^*, \pi)$$
+based on following property 
+$$r(\pi^*, (1-\epsilon)\pi^* + \epsilon  \pi ) = (1-\epsilon)r(\pi^*, \pi^*)+\epsilon r(\pi^*, \pi)$$
 because $r(\pi_1, \pi_2) = J(\pi_1, \pi_2)=\mathbb{E}_{(a_1,a_2)}[R(a_1, a_2)]$
 
 ### Sources
