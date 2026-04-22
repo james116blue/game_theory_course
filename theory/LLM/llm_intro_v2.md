@@ -456,9 +456,6 @@ $$x_t = \arg\max_{x} P(x | x_{<t})$$
 ---
 
 ## Temperature Sampling
-
-### Математика:
-
 $$P_T(x_i) = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}$$
 
 где:
